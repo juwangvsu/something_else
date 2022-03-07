@@ -1,3 +1,35 @@
+
+------3/6/2022 Ju Wang -----------------
+newpcamd
+
+train.py
+	removed arch
+	mkdir ckpt
+
+	python train.py --model global_coord_latent_nl --num_frames 16 --logname experiment_name --batch_size 12 --coord_feature_dim 256 --root_frames ../20bn-something-something-v2-frames --json_data_train dataset_splits/compositional/train.json 
+                   --json_data_val dataset_splits/compositional/validation.json 
+                   --json_file_labels dataset_splits/compositional/labels.json
+                   --tracked_boxes ../detected_annotations/combined_annonations_compositional.json
+	
+Computer Req:
+	Mem >= 32 GB
+	GPU > 4GB
+	dataset > 500 GB
+
+Time:
+	epoch: 10 mins
+
+resnet:
+	model/pretrained_weights/kinetics-res50.pth
+	automatic download if use certain model?
+	the Globalxxx model use that.
+	resnet3d_xl.py
+
+model:
+	default model is coord, VideoModelCoord
+	try global_coord_latent_nl, VideoModelGlobalCoordLatentNL
+
+-------------------------------------------------
 # The Something-Else Annotations
 This repository provides instructions regarding the annotations used in the paper: 'Something-Else: Compositional Action Recognition with Spatial-Temporal Interaction Networks' (https://arxiv.org/abs/1912.09930).
 We collected annotations for 180049 videos from the Something-Something Dataset (https://20bn.com/datasets/something-something), that include per frame bounding box annotation for each object and hand in the human-object interaction in the video.
@@ -78,14 +110,27 @@ The annotated videos will be saved in the `annotated_videos` folder.
 ![Output sample](https://github.com/joaanna/something_else/blob/master/videos/tracking_annotations/35176.gif)
 
 # Training
+Dataset prepare:
+	(0) 
+	(1) 20bn-something-something-v2-frames point to a folder contain all video folders with extracted frames.
+	(2) ln -sn 20bn-something-something-v2-frames frames
+	(3) mkdir detected_annotations/
+		download annoation files from google drive:
+		detected_compositional_part1.json
+		detected_compositional_part2.json
+		detected_compositional_part3.json
+		cat three json to a single file
+		 use jsonmergy.py		
+
 To train the models from our paper run:
-```python train.py --model coord_latent_nl --num_frames 16 --logname experiment_name --batch_size 12 
-                   --coord_feature_dim 256 --root_frames /path/to/frames 
-                   --json_data_train dataset_splits/compositional/train.json 
+	cd code
+	mkdir ckpt
+	python train.py --model coord_latent_nl --num_frames 16 --logname experiment_name --batch_size 12 --coord_feature_dim 256 --root_frames ../20bn-something-something-v2-frames --json_data_train dataset_splits/compositional/train.json 
                    --json_data_val dataset_splits/compositional/validation.json 
                    --json_file_labels dataset_splits/compositional/labels.json
-                   --tracked_boxes /path/to/bounding_box_annotations.json
-```
+                   --tracked_boxes ../detected_annotations/combined_annonations_compositional.json
+
+	status: loading label and annotation, error at 52701, should we combine all the detected+compositional_part1/2/3 to 1 file?
 
 Place the data in the folder /path/to/frames each video bursted into frames in a separate folder. The ground-truth box annotations 
 can be found in the google drive in parts and have to be concatenated in a single json file.

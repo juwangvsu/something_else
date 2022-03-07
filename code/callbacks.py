@@ -295,6 +295,10 @@ class Logger:
         im = plot_graph(array)
         self._summ_writer.add_image('{}_{}'.format(name, phase), im, step)
 
+        #Ju Wang: add graph to log
+    def log_model_graph(self, model, global_img,box_cat, box_input, video_label):
+        self._summ_writer.add_graph(model, (global_img,box_cat, box_input, video_label))
+
     def dump_scalars(self, log_path=None):
         log_path = os.path.join(self._log_dir, "scalar_data.json") if log_path is None else log_path
         self._summ_writer.export_scalars_to_json(log_path)

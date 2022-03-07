@@ -58,9 +58,10 @@ class VideoFolder(torch.utils.data.Dataset):
         self.args = args
         self.pre_resize_shape = (256, 340)
         boxes_path = args.tracked_boxes
-        print('... Loading box annotations might take a minute ...')
+        print('... Loading box annotations might take a minute ...', boxes_path)
         with open(boxes_path, 'r') as f:
             self.box_annotations = json.load(f)
+        print(' box_annotations len()', len(self.box_annotations))
 
         self.img_mean = [0.485, 0.456, 0.406]
         self.img_std = [0.229, 0.224, 0.225]
@@ -192,7 +193,9 @@ class VideoFolder(torch.utils.data.Dataset):
         assert len(coord_frame_list) == len(frame_list) // 2
 
         folder_id = str(int(self.vid_names[index]))
+#        print('box_annotations size:', len(self.box_annotations), ' ', folder_id)
         video_data = self.box_annotations[folder_id]
+#        video_data = self.box_annotations[int(self.vid_names[index])]
 
         # union the objects of two frames
         object_set = set()

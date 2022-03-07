@@ -9,6 +9,7 @@ import torch.backends.cudnn as cudnn
 from callbacks import AverageMeter, Logger
 from data_utils.data_loader_frames import VideoFolder
 from utils import save_results
+from torch.autograd import Variable
 
 parser = argparse.ArgumentParser(description='PyTorch Smth-Else')
 
@@ -115,6 +116,17 @@ def main():
     model = torch.nn.DataParallel(model).cuda()
     cudnn.benchmark = True
 
+    # create tensorboard for log and graph
+    tb_logdir = os.path.join(args.logdir, args.logname)
+    if not (os.path.exists(tb_logdir)):
+        os.makedirs(tb_logdir)
+    tb_logger = Logger(tb_logdir)
+    box_input = Variable(torch.rand(1, 32, 4))
+    box_cat = torch.Tensor(1, 1, 32)
+    video_label = torch.Tensor(1, 4)
+    global_img = torch.Tensor(1, 1,3,224,224)
+    tb_logger.log_model_graph(model,global_img,box_cat, box_input, video_label)
+
     # create training and validation dataset
     dataset_train = VideoFolder(root=args.root_frames,
                                 num_boxes=args.num_boxes,
@@ -157,11 +169,6 @@ def main():
         validate(val_loader, model, criterion, class_to_idx=dataset_val.classes_dict)
         return
 
-    # training, start a logger
-    tb_logdir = os.path.join(args.logdir, args.logname)
-    if not (os.path.exists(tb_logdir)):
-        os.makedirs(tb_logdir)
-    tb_logger = Logger(tb_logdir)
 
     for epoch in range(args.start_epoch, args.epochs):
         adjust_learning_rate(optimizer, epoch, args.lr_steps)
@@ -181,12 +188,13 @@ def main():
         save_checkpoint(
             {
                 'epoch': epoch + 1,
-                'arch': args.arch,
+                #'arch': args.arch,
                 'state_dict': model.module.state_dict(),
                 'best_loss': best_loss,
             },
             is_best,
-            os.path.join(args.ckpt, args.arch.lower() + '_{}'.format(args.logname)))
+            os.path.join(args.ckpt, '_{}'.format(args.logname)))
+            #os.path.join(args.ckpt, args.arch.lower() + '_{}'.format(args.logname)))
 
 
 def train(train_loader, model, optimizer, epoch, criterion, tb_logger=None):
@@ -342,7 +350,8 @@ def accuracy(output, target, topk=(1,)):
 
         res = []
         for k in topk:
-            correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
+            #print('correct[:k].shape: ', correct[:k].shape)
+            correct_k = correct[:k].contiguous().view(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
 
