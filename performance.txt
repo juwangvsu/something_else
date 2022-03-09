@@ -1,0 +1,413 @@
+Skip to content
+Sign up
+joaanna
+/
+something_else
+Public
+Code
+Issues
+12
+Pull requests
+Actions
+Projects
+Wiki
+More
+About the performance #6
+ Open
+ruiyan1995 opened this issue on Aug 5, 2020 · 33 comments
+ Open
+About the performance
+#6
+ruiyan1995 opened this issue on Aug 5, 2020 · 33 comments 
+Comments
+@ruiyan1995
+ruiyan1995 commented on Aug 5, 2020 • 
+Thanks for your wonderful work. However, I cannot get the excepted results as reported in your paper. I post a log as follows,
+
+Namespace(batch_size=72, ckpt='./ckpt/coord_512/', clip_gradient=5, coord_feature_dim=512, 
+dataset='smth_smth', epochs=50, evaluate=False, fine_tune=None, img_feature_dim=256, 
+json_data_train='dataset_splits/compositional/train.json', 
+json_data_val='dataset_splits/compositional/validation.json', 
+json_file_labels='dataset_splits/compositional/labels.json', log_freq=10, logdir='./logs', 
+logname='exp', lr=0.01, lr_steps=[24, 35, 45], model='coord', momentum=0.9, num_boxes=4, 
+num_classes=174, num_frames=4, print_freq=20, restore_custom=None, restore_i3d=None, 
+resume='', root_frames='dataset/frames', shot=5, size=224, start_epoch=None, 
+tracked_boxes='dataset/bounding_box_annotations.json', weight_decay=0.0001, workers=8)
+DataParallel(
+  (module): VideoModelCoord(
+    (coord_to_feature): Sequential(
+      (0): Linear(in_features=4, out_features=256, bias=False)
+      (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): Linear(in_features=256, out_features=512, bias=False)
+      (4): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+    )
+    (spatial_node_fusion): Sequential(
+      (0): Linear(in_features=1024, out_features=512, bias=False)
+      (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): Linear(in_features=512, out_features=512, bias=False)
+      (4): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+    )
+    (box_feature_fusion): Sequential(
+      (0): Linear(in_features=1024, out_features=512, bias=False)
+      (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): Linear(in_features=512, out_features=512, bias=False)
+      (4): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+    )
+    (classifier): Sequential(
+      (0): Linear(in_features=512, out_features=512, bias=True)
+      (1): ReLU(inplace=True)
+      (2): Linear(in_features=512, out_features=512, bias=True)
+      (3): ReLU(inplace=True)
+      (4): Linear(in_features=512, out_features=174, bias=True)
+    )
+  )
+)
+... Loading box annotations might take a minute ...
+Loading label strings
+create training loader
+Loading label strings
+create validation loader
+training, start a logger
+########################
+logging outputs to  ./logs/exp
+########################
+Epoch[0](Train):	Time 250.973	Loss 4.0865	Acc1 12.3	Acc5 30.3
+Epoch[0](Test):	Time 246.288	Loss 3.5845	Acc1 18.0	Acc5 42.4
+Epoch[1](Train):	Time 257.215	Loss 3.5095	Acc1 20.1	Acc5 45.0
+Epoch[1](Test):	Time 241.312	Loss 3.2787	Acc1 23.0	Acc5 50.2
+Epoch[2](Train):	Time 249.761	Loss 3.3151	Acc1 23.2	Acc5 49.7
+Epoch[2](Test):	Time 219.238	Loss 3.1672	Acc1 24.6	Acc5 53.7
+Epoch[3](Train):	Time 238.376	Loss 3.2071	Acc1 25.1	Acc5 52.5
+Epoch[3](Test):	Time 222.522	Loss 3.0990	Acc1 26.1	Acc5 55.5
+Epoch[4](Train):	Time 244.955	Loss 3.1254	Acc1 26.6	Acc5 54.4
+Epoch[4](Test):	Time 217.983	Loss 2.9972	Acc1 28.4	Acc5 57.6
+Epoch[5](Train):	Time 234.445	Loss 3.0752	Acc1 27.4	Acc5 55.6
+Epoch[5](Test):	Time 214.028	Loss 2.9726	Acc1 28.5	Acc5 58.4
+Epoch[6](Train):	Time 225.765	Loss 3.0262	Acc1 28.3	Acc5 56.3
+Epoch[6](Test):	Time 220.306	Loss 2.9144	Acc1 30.1	Acc5 59.4
+Epoch[7](Train):	Time 228.182	Loss 2.9761	Acc1 29.2	Acc5 57.7
+Epoch[7](Test):	Time 218.253	Loss 2.9110	Acc1 29.6	Acc5 59.4
+Epoch[8](Train):	Time 225.359	Loss 2.9479	Acc1 29.9	Acc5 58.4
+Epoch[8](Test):	Time 215.088	Loss 2.8958	Acc1 30.5	Acc5 59.7
+Epoch[9](Train):	Time 221.779	Loss 2.9231	Acc1 30.3	Acc5 59.0
+Epoch[9](Test):	Time 222.096	Loss 2.8578	Acc1 31.1	Acc5 61.0
+Epoch[10](Train):	Time 221.320	Loss 2.8892	Acc1 31.1	Acc5 59.6
+Epoch[10](Test):	Time 206.201	Loss 2.8056	Acc1 32.3	Acc5 62.2
+Epoch[11](Train):	Time 219.109	Loss 2.8578	Acc1 31.4	Acc5 60.2
+Epoch[11](Test):	Time 210.279	Loss 2.8376	Acc1 31.2	Acc5 61.3
+Epoch[12](Train):	Time 231.434	Loss 2.8426	Acc1 31.7	Acc5 60.4
+Epoch[12](Test):	Time 223.903	Loss 2.8126	Acc1 32.0	Acc5 62.1
+Epoch[13](Train):	Time 231.753	Loss 2.8269	Acc1 31.9	Acc5 60.8
+Epoch[13](Test):	Time 197.708	Loss 2.8186	Acc1 31.9	Acc5 62.1
+Epoch[14](Train):	Time 235.947	Loss 2.8010	Acc1 32.4	Acc5 61.5
+Epoch[14](Test):	Time 193.398	Loss 2.8208	Acc1 31.9	Acc5 61.7
+Epoch[15](Train):	Time 214.591	Loss 2.7766	Acc1 32.9	Acc5 61.9
+Epoch[15](Test):	Time 216.853	Loss 2.7494	Acc1 33.1	Acc5 63.1
+Epoch[16](Train):	Time 233.909	Loss 2.7609	Acc1 33.3	Acc5 62.4
+Epoch[16](Test):	Time 216.557	Loss 2.7595	Acc1 32.9	Acc5 63.1
+Epoch[17](Train):	Time 228.890	Loss 2.7548	Acc1 33.3	Acc5 62.5
+Epoch[17](Test):	Time 215.945	Loss 2.7748	Acc1 32.8	Acc5 62.5
+Epoch[18](Train):	Time 249.931	Loss 2.7447	Acc1 33.4	Acc5 62.4
+Epoch[18](Test):	Time 213.614	Loss 2.7503	Acc1 33.0	Acc5 63.1
+Epoch[19](Train):	Time 247.126	Loss 2.7289	Acc1 33.9	Acc5 63.0
+Epoch[19](Test):	Time 202.999	Loss 2.7516	Acc1 33.1	Acc5 63.2
+Epoch[20](Train):	Time 228.344	Loss 2.7105	Acc1 34.0	Acc5 63.2
+Epoch[20](Test):	Time 214.828	Loss 2.7307	Acc1 33.6	Acc5 63.4
+Epoch[21](Train):	Time 231.537	Loss 2.7004	Acc1 34.3	Acc5 63.5
+Epoch[21](Test):	Time 212.843	Loss 2.7327	Acc1 33.4	Acc5 63.3
+Epoch[22](Train):	Time 249.113	Loss 2.6868	Acc1 34.4	Acc5 63.9
+Epoch[22](Test):	Time 217.342	Loss 2.7276	Acc1 32.9	Acc5 63.6
+Epoch[23](Train):	Time 238.155	Loss 2.6758	Acc1 34.7	Acc5 63.8
+Epoch[23](Test):	Time 218.108	Loss 2.7461	Acc1 32.7	Acc5 63.1
+Epoch[24](Train):	Time 235.995	Loss 2.5645	Acc1 37.0	Acc5 65.9
+Epoch[24](Test):	Time 217.746	Loss 2.6351	Acc1 35.8	Acc5 65.2
+Epoch[25](Train):	Time 225.493	Loss 2.5425	Acc1 37.7	Acc5 66.6
+Epoch[25](Test):	Time 222.683	Loss 2.6292	Acc1 35.8	Acc5 65.5
+Epoch[26](Train):	Time 226.960	Loss 2.5244	Acc1 37.9	Acc5 66.8
+Epoch[26](Test):	Time 214.732	Loss 2.6218	Acc1 36.0	Acc5 65.6
+Epoch[27](Train):	Time 215.398	Loss 2.5226	Acc1 38.2	Acc5 67.0
+Epoch[27](Test):	Time 220.919	Loss 2.6182	Acc1 36.1	Acc5 65.7
+Epoch[28](Train):	Time 210.975	Loss 2.5116	Acc1 38.2	Acc5 67.2
+Epoch[28](Test):	Time 211.322	Loss 2.6199	Acc1 36.2	Acc5 65.7
+Epoch[29](Train):	Time 195.517	Loss 2.5083	Acc1 38.3	Acc5 67.1
+Epoch[29](Test):	Time 218.438	Loss 2.6121	Acc1 36.0	Acc5 66.1
+Epoch[30](Train):	Time 203.689	Loss 2.4996	Acc1 38.3	Acc5 67.3
+Epoch[30](Test):	Time 204.631	Loss 2.6186	Acc1 36.1	Acc5 66.0
+Epoch[31](Train):	Time 211.648	Loss 2.4959	Acc1 38.4	Acc5 67.3
+Epoch[31](Test):	Time 218.647	Loss 2.6113	Acc1 36.3	Acc5 65.9
+Epoch[32](Train):	Time 214.629	Loss 2.5043	Acc1 38.2	Acc5 67.0
+Epoch[32](Test):	Time 218.356	Loss 2.6173	Acc1 36.3	Acc5 65.9
+Epoch[33](Train):	Time 209.261	Loss 2.4975	Acc1 38.4	Acc5 67.3
+Epoch[33](Test):	Time 217.515	Loss 2.6152	Acc1 36.5	Acc5 65.9
+Epoch[34](Train):	Time 212.801	Loss 2.4919	Acc1 38.8	Acc5 67.5
+Epoch[34](Test):	Time 221.858	Loss 2.6124	Acc1 36.3	Acc5 66.0
+Epoch[35](Train):	Time 221.958	Loss 2.4725	Acc1 38.9	Acc5 68.0
+Epoch[35](Test):	Time 236.539	Loss 2.6065	Acc1 36.4	Acc5 66.3
+Epoch[36](Train):	Time 201.365	Loss 2.4690	Acc1 39.1	Acc5 68.0
+Epoch[36](Test):	Time 246.205	Loss 2.6054	Acc1 36.6	Acc5 66.2
+Epoch[37](Train):	Time 209.647	Loss 2.4717	Acc1 39.1	Acc5 68.0
+Epoch[37](Test):	Time 246.133	Loss 2.6055	Acc1 36.5	Acc5 66.2
+Epoch[38](Train):	Time 185.174	Loss 2.4631	Acc1 39.2	Acc5 68.0
+Epoch[38](Test):	Time 256.949	Loss 2.6091	Acc1 36.5	Acc5 66.1
+Epoch[39](Train):	Time 190.501	Loss 2.4627	Acc1 39.3	Acc5 68.0
+Epoch[39](Test):	Time 265.713	Loss 2.6056	Acc1 36.5	Acc5 66.2
+Epoch[40](Train):	Time 187.822	Loss 2.4689	Acc1 39.2	Acc5 68.0
+Epoch[40](Test):	Time 239.412	Loss 2.6033	Acc1 36.5	Acc5 66.2
+Epoch[41](Train):	Time 194.759	Loss 2.4675	Acc1 39.2	Acc5 67.9
+Epoch[41](Test):	Time 257.267	Loss 2.6064	Acc1 36.6	Acc5 66.1
+Epoch[42](Train):	Time 197.041	Loss 2.4649	Acc1 39.2	Acc5 67.9
+Epoch[42](Test):	Time 248.777	Loss 2.6085	Acc1 36.5	Acc5 66.3
+Epoch[43](Train):	Time 167.262	Loss 2.4695	Acc1 39.2	Acc5 67.9
+Epoch[43](Test):	Time 237.524	Loss 2.6054	Acc1 36.6	Acc5 66.2
+Epoch[44](Train):	Time 159.683	Loss 2.4646	Acc1 39.3	Acc5 67.9
+Epoch[44](Test):	Time 209.467	Loss 2.6053	Acc1 36.5	Acc5 66.3
+Epoch[45](Train):	Time 181.953	Loss 2.4625	Acc1 39.1	Acc5 68.0
+Epoch[45](Test):	Time 232.356	Loss 2.6034	Acc1 36.5	Acc5 66.3
+Epoch[46](Train):	Time 195.127	Loss 2.4567	Acc1 39.0	Acc5 68.3
+Epoch[46](Test):	Time 244.528	Loss 2.6048	Acc1 36.6	Acc5 66.2
+Epoch[47](Train):	Time 196.444	Loss 2.4604	Acc1 39.1	Acc5 68.1
+Epoch[47](Test):	Time 237.003	Loss 2.6030	Acc1 36.6	Acc5 66.2
+Epoch[48](Train):	Time 199.314	Loss 2.4682	Acc1 39.2	Acc5 68.0
+Epoch[48](Test):	Time 234.401	Loss 2.6088	Acc1 36.5	Acc5 66.3
+Epoch[49](Train):	Time 200.477	Loss 2.4636	Acc1 39.1	Acc5 68.1
+Epoch[49](Test):	Time 221.705	Loss 2.6040	Acc1 36.4	Acc5 66.2
+As reported in your paper, 'STIN' with Compositional setting and GT, should achieve 47.1% on top-1 and 75.2% on top-5.
+Did I get some settings wrong？Could you help me? @joaanna
+
+ @joaanna
+Owner
+joaanna commented on Aug 6, 2020
+Hi Rui,
+
+One thing that might be causing the lower performance is that you are setting num_frames=4, we trained our coordinate models on 8 frames, try that.
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Aug 6, 2020
+@joaanna Thanks for your help.
+
+ @xxxzhi
+xxxzhi commented on Aug 30, 2020
+Hi @ruiyan1995, do you finally achieve the reported performance?
+
+@joaanna , I also can not achieve the reported performance with the comand that you provided in README:
+
+python train.py --model coord_latent_nl --num_frames 16 --logname experiment_name --batch_size 12 
+--coord_feature_dim 256 --root_frames /opt/data/private/dataset/something/v2/20bn-something-something-v2-frames/ 
+--json_data_train dataset_splits/compositional/train.json 
+--json_data_val dataset_splits/compositional/validation.json 
+--json_file_labels dataset_splits/compositional/labels.json 
+--tracked_boxes /opt/data/private/dataset/smthelse/bounding_box_annotations.pkl
+
+I can only achieve 45%, while the reported is 51%. Could you help me?
+
+Other params use the default setting.
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Aug 30, 2020
+@xxxzhi I obtained the reported performance by setting num_frames=8, batch_size=72, and coord_feature_dim=512.
+
+ @xxxzhi
+xxxzhi commented on Aug 30, 2020 • 
+Ok, thanks for your reply. By the way, which step do you decrease the lr? 25 or 35? I find it is 35 in the paper. But in the code, it is 25.
+
+ @xxxzhi
+xxxzhi commented on Aug 31, 2020
+Well, I still can not obtain the reported performance. Here is my hyper-parameters
+
+Namespace(batch_size=72, ckpt='./ckpt', clip_gradient=5, coord_feature_dim=512, dataset='smth_smth', epochs=50, evaluate=False, fine_tune=None, img_feature_dim=256, json_data_train='dataset_splits/compositional/train.json', json_data_val='dataset_splits/compositional/validation.json', json_file_labels='dataset_splits/compositional/labels.json', log_freq=10, logdir='./logs', logname='compositional_basen1', lr=0.01, lr_steps=[24, 35, 45], model='coord_latent_nl', momentum=0.9, num_boxes=4, num_classes=174, num_frames=8, print_freq=20, restore_custom=None, restore_i3d=None, resume='', root_frames='something/v2/20bn-something-something-v2-frames', shot=5, size=224, start_epoch=None, tracked_boxes='bounding_box_annotations.pkl', weight_decay=0.0001, workers=4)
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Aug 31, 2020
+@xxxzhi Make sure that FPS is 12 and the boxes correspond to the frames.
+
+ @xxxzhi
+xxxzhi commented on Sep 1, 2020
+@ruiyan1995 thanks for your reply. I guess I find the reason. It is because of a bug in coord_latent_nl. See #5
+
+ @Sobeney
+Sobeney commented on Sep 11, 2020
+@joaanna , I can't achieve the result reported in your paper with I3D model. When using compositional split, the Top1 result should be 46.8 according to your paper, but I can only get 39.9.
+Important settings are: --num_frames 8 -b 24 (I also tried batchsize=16, 32, just worse...), and I use 2 gpu to train. Could you help me?
+
+ @Sobeney
+Sobeney commented on Sep 11, 2020
+@ruiyan1995 have you tried the globel_i3d and get the expected result?
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Sep 11, 2020
+@ruiyan1995 have you tried the globel_i3d and get the expected result?
+
+I tested the VideoModelGlobalCoordLatent without overriding the default train function, it works. I guess the your problem is caused by overriding the default train function???
+
+ @Sobeney
+Sobeney commented on Sep 11, 2020
+@ruiyan1995 have you tried the globel_i3d and get the expected result?
+
+I tested the VideoModelGlobalCoordLatent without overriding the default train function, it works. I guess the your problem is caused by overriding the default train function???
+
+Thanks for your reply. I didn't change the original code, do you mean that I should delete the overriding train function? By the way, I wonder the batch-size number and GPU number you used, Thanks a lot.
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Sep 11, 2020
+@ruiyan1995 have you tried the globel_i3d and get the expected result?
+
+I tested the VideoModelGlobalCoordLatent without overriding the default train function, it works. I guess the your problem is caused by overriding the default train function???
+
+Thanks for your reply. I didn't change the original code, do you mean that I should delete the overriding train function? By the way, I wonder the batch-size number and GPU number you used, Thanks a lot.
+
+Yes, delete the overriding function. I set the batch-size = 72 and run the code on 2 GPU.
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Sep 22, 2020
+@Sobeney Did you get the expected acc on I3D baseline? I have the same problem.
+
+ @Sobeney
+Sobeney commented on Sep 23, 2020
+@Sobeney Did you get the expected acc on I3D baseline? I have the same problem.
+
+No, the result of i3d is still far to paper. But according to your guide, I get the the acceptable result of 52.3% for global_coord_latent model.
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Sep 23, 2020
+@xxxzhi Hi, did you have the expected results on I3D baseline?
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Sep 23, 2020
+@Sobeney Did you get the expected acc on I3D baseline? I have the same problem.
+
+No, the result of i3d is still far to paper. But according to your guide, I get the the acceptable result of 52.3% for global_coord_latent model.
+
+It's so confusing. If you have any idea, please let me know. Thank you so much.
+
+ @xxxzhi
+xxxzhi commented on Sep 23, 2020
+well, I can only obtain 51% with batch size 12. I change the line 163 to return [ret[-1]] # center_crop_only. I think that's a bug. "line163" will lead to different validation result between two validation due to "line 152".
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Sep 25, 2020
+well, I can only obtain 51% with batch size 12. I change the line 163 to return [ret[-1]] # center_crop_only. I think that's a bug. "line163" will lead to different validation result between two validation due to "line 152".
+
+You got 51% on I3D? The result of I3D with the compositonal setting is only 46.8% in the paper.
+
+ @xxxzhi
+xxxzhi commented on Sep 26, 2020
+Sorry. It's global_coord_latent
+
+ @xxxzhi
+xxxzhi commented on Oct 9, 2020 • 
+Hi @ruiyan1995 @Sobeney, what's your final result on global_coord_latent and coord_latent_nl? It looks like difficult to achieve the reported result.
+
+ @Sobeney
+Sobeney commented on Oct 10, 2020
+Hi @ruiyan1995 @Sobeney, what's your final result on global_coord_latent and coord_latent_nl? It looks like difficult to achieve the reported result.
+
+52.3 for global_coord_latent, haven't try coord_latent_nl yet.
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Oct 10, 2020
+@xxxzhi do not overwrite the train() function, I got the excepted results on global_coord_latent
+
+ @xxxzhi
+xxxzhi commented on Oct 11, 2020
+Ok. Thanks for your information.
+
+ @patrolli
+patrolli commented on Oct 19, 2020
+Hi @xxxzhi , have you got the expected result of coord_latent_nl? My reproduce result is far to the report, it is about 41.6% :(
+
+ @xxxzhi
+xxxzhi commented on Oct 19, 2020
+Following the suggestions above, My reproduced result is about 50.%
+
+ @patrolli
+ patrolli commented on Oct 19, 2020
+ Thanks for your reply! I've found the problem you mentioned. I will re-test it!
+
+
+On 10/19/2020 20:55，侯志<notifications@github.com> wrote：
+
+Following the suggestions above, My reproduced result is about 50.%
+
+—
+You are receiving this because you commented.
+Reply to this email directly, view it on GitHub, or unsubscribe.
+ @ZZZZZZZZJ
+ZZZZZZZZJ commented on Oct 27, 2020
+I reproduce the coord_latent in composition split by setting num_frames=8, batch_size=72, and coord_feature_dim=512, and get 50.1. It is still a bit lower than the reported performance, 51.3.
+Is there any advice for improving? @joaanna @ruiyan1995
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Oct 27, 2020
+@ZZZZZZZZJ Did you perform data augmentation?
+
+ @ZZZZZZZZJ
+ZZZZZZZZJ commented on Oct 27, 2020
+The default value of parameter "if_augment" in "VideoFolder" is True, so I think I perform data augmentation. @ruiyan1995
+
+Namespace(batch_size=72, ckpt='./ckpt/coord_latent/', clip_gradient=5, coord_feature_dim=512, dataset='smth_smth', epochs=50, evaluate=False, fine_tune=None, img_feature_dim=256, json_data_train='dataset_splits/compositional/train.json', json_data_val='dataset_splits/compositional/validation.json', json_file_labels='dataset_splits/compositional/labels.json', log_freq=10, logdir='./logs', logname='exp', lr=0.01, lr_steps=[24, 35, 45], model='coord_latent', momentum=0.9, num_boxes=4, num_classes=174, num_frames=8, print_freq=20, restore_custom=None, restore_i3d=None, resume='./ckpt/coord_latent/coord_latent_exp_latest.pth.tar', root_frames='../data/frames', shot=5, size=224, start_epoch=None, tracked_boxes='../data/bbox_annotations/bounding_box_smthsmth.json', weight_decay=0.0001, workers=4)
+
+ @Sobeney
+Sobeney commented on Nov 6, 2020
+@ruiyan1995 @joaanna I have tried global_i3d with num_frames = 16, and the result is 50.2. Have you got a reasonable result with 8 frames? I really wonder the exact frame number setting in the paper...
+
+ @ruiyan1995
+Author
+ruiyan1995 commented on Nov 6, 2020
+@Sobeney They trained the I3D baseline with 16 frames, which is not claimed in the paper. And I only obtained 40% on I3D with 8 frames.
+
+ @Sobeney
+Sobeney commented on Nov 6, 2020
+@ruiyan1995 That makes sense! Thanks for your help.
+
+ to join this conversation on GitHub. Already have an account? Sign in to comment
+Assignees
+No one assigned
+Labels
+None yet
+Projects
+None yet
+Milestone
+No milestone
+Linked pull requests
+Successfully merging a pull request may close this issue.
+
+None yet
+6 participants
+@xxxzhi
+@ruiyan1995
+@joaanna
+@Sobeney
+@ZZZZZZZZJ
+@patrolli
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Username may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen.
+
+

@@ -28,6 +28,31 @@ resnet:
 model:
 	default model is coord, VideoModelCoord
 	try global_coord_latent_nl, VideoModelGlobalCoordLatentNL
+	output classification is one-hot encode of video action class
+	(b, num_classes)
+run1:
+python train.py --model coord_latent_nl --num_frames 16 --logname experiment_name3 --resume ckpt/_experiment_name_latest.pth.tar --batch_size 72 --coord_feature_dim 512 --root_frames ../frames --json_data_train dataset_splits/compositional/train.json --json_data_val dataset_splits/compositional/validation.json --json_file_labels dataset_splits/compositional/labels.json --tracked_boxes ../detected_annotations/combined_annonations_compositional.json
+
+Test: [400/401]	Time 2.235 (1.023)	Loss 3.8279 (3.7606)	Acc1 16.0 (21.7)Acc5 41.7 (43.9)
+
+run2:
+--model coord_latent_nl --num_frames 16 --logname experiment_name4  --batch_size 72 --coord_feature_dim 256
+
+
+b: 72 batch size
+3: image channels rgb
+16: nr_frames, = num_frames?
+4: nr_boxes
+
+global_img_tensors, box_tensors, box_categories, video_label.shape torch.Size([72, 3, 16, 224, 224]) torch.Size([72, 8, 4, 4]) torch.Size([72, 8, 4]) torch.Size([72])
+
+performance:
+I reproduce the coord_latent in composition split by setting num_frames=8, batch_size=72, and coord_feature_dim=512, and get 50.1. It is still a bit lower than the reported performance, 51.3.
+
+I have tried global_i3d with num_frames = 16, and the result is 50.2. Have you got a reasonable result with 8 frames? 
+They trained the I3D baseline with 16 frames, which is not claimed in the paper. And I only obtained 40% on I3D with 8 frames.`
+
+see performance.txt
 
 -------------------------------------------------
 # The Something-Else Annotations

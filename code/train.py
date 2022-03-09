@@ -211,6 +211,7 @@ def train(train_loader, model, optimizer, epoch, criterion, tb_logger=None):
     end = time.time()
     for i, (global_img_tensors, box_tensors, box_categories, video_label) in enumerate(train_loader):
         model.zero_grad()
+        #print('global_img_tensors, box_tensors, box_categories, video_label.shape', global_img_tensors.shape, box_tensors.shape, box_categories.shape, video_label.shape)
         # measure data loading time
         data_time.update(time.time() - end)
 
