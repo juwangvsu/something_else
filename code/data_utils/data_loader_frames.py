@@ -8,7 +8,7 @@ from data_utils import gtransforms
 from data_utils.data_parser import WebmDataset
 from numpy.random import choice as ch
 import json
-
+import glob
 
 class VideoFolder(torch.utils.data.Dataset):
     """
@@ -52,6 +52,14 @@ class VideoFolder(torch.utils.data.Dataset):
         self.classes_dict = self.dataset_object.classes_dict
         self.model = model
         self.num_boxes = num_boxes
+        print('self.data_root:', self.data_root)
+        testimgfolder =os.path.join(self.data_root,'1/*')
+        print('checking sample jpg folder name: ', testimgfolder)
+        testimglist = glob.glob(testimgfolder)
+        print('checking sample jpg file name: ', testimglist[0])
+        self.filenamelen= len(testimglist[0].split('/')[-1])
+            # 10 for file name  000000xx.jpg
+            # 8 for 0000xx.jpg
 
         # Prepare data for the data loader
         self.prepare_data()
@@ -131,7 +139,10 @@ class VideoFolder(torch.utils.data.Dataset):
         :param frame_idx: index
         :return:
         """
-        return Image.open(join(os.path.dirname(self.data_root), 'frames', vid_name, '%04d.jpg' % (frame_idx + 1))).convert('RGB')
+        if self.filenamelen==10:
+            return Image.open(join(os.path.dirname(self.data_root), 'frames', vid_name, '%06d.jpg' % (frame_idx + 1))).convert('RGB')
+        else:
+            return Image.open(join(os.path.dirname(self.data_root), 'frames', vid_name, '%04d.jpg' % (frame_idx + 1))).convert('RGB')
 
     def _sample_indices(self, nr_video_frames):
         average_duration = nr_video_frames * 1.0 / self.coord_nr_frames

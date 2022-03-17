@@ -121,8 +121,8 @@ def main():
     if not (os.path.exists(tb_logdir)):
         os.makedirs(tb_logdir)
     tb_logger = Logger(tb_logdir)
-    box_input = Variable(torch.rand(1, 32, 4))
-    box_cat = torch.Tensor(1, 1, 32)
+    box_input = Variable(torch.rand(1, args.num_boxes*(args.num_frames//2), 4)) # 32 for 4*8
+    box_cat = torch.Tensor(1, 1, args.num_boxes*(args.num_frames//2)) #32 for 4*8
     video_label = torch.Tensor(1, 4)
     global_img = torch.Tensor(1, 1,3,224,224)
     tb_logger.log_model_graph(model,global_img,box_cat, box_input, video_label)

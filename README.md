@@ -30,15 +30,38 @@ model:
 	try global_coord_latent_nl, VideoModelGlobalCoordLatentNL
 	output classification is one-hot encode of video action class
 	(b, num_classes)
-run1:
+------
+run1: 16, 72, 512 model c_l_l experiment_name3
+cd code
 python train.py --model coord_latent_nl --num_frames 16 --logname experiment_name3 --resume ckpt/_experiment_name_latest.pth.tar --batch_size 72 --coord_feature_dim 512 --root_frames ../frames --json_data_train dataset_splits/compositional/train.json --json_data_val dataset_splits/compositional/validation.json --json_file_labels dataset_splits/compositional/labels.json --tracked_boxes ../detected_annotations/combined_annonations_compositional.json
+	
+batch time (avg time)
+	Test: [400/401]	Time 2.235 (1.023)	Loss 3.8279 (3.7606)	
+	Acc1 16.0 (21.7): 21.7 avg acc for top 1
+	Acc5 41.7 (43.9): 43.9 avg acc for top 5
 
-Test: [400/401]	Time 2.235 (1.023)	Loss 3.8279 (3.7606)	Acc1 16.0 (21.7)Acc5 41.7 (43.9)
-
-run2:
+run2: 16, 72, 256 model c_l_l experiment_name4
 --model coord_latent_nl --num_frames 16 --logname experiment_name4  --batch_size 72 --coord_feature_dim 256
+about same as run1
 
 
+run3: 8, 72, 256 model c_l_l lenova1 experiment_name7
+	Time: 0.22 (0.29) Data 0.2 (0.19)
+	Acc5 50.0 (53.4)
+run4: 8, 72, 256 model c_l_l experiment_name7
+	Epoch: [49][760/762]	Time 0.042 (0.265)	Data 0.001 (0.184)
+	Loss 3.2759 (3.5507)	Acc1 20.8 (18.8)	Acc5 54.2 (45.1)
+
+run4: 8, 72, 512 model c_l_l experiment_name6
+	Loss 3.5118 (3.4050)	Acc1 25.0 (21.8)	Acc5 50.0 (48.4)
+
+run5: 8, 36, 256 model c_l_l lenova1 experiment_name8, 6hr 5min
+	Epoch: [49][1520/1525]	Time 0.057 (0.149)	Data 0.024 (0.086)
+	Loss 3.7628 (3.3877)	Acc1 13.9 (21.6)	Acc5 36.1 (49.0)
+
+run6: 8, 18, 256 model c_l_l lenova1 experiment_name9, 6hr 5min
+
+---------------------
 b: 72 batch size
 3: image channels rgb
 16: nr_frames, = num_frames?
@@ -144,8 +167,9 @@ Dataset prepare:
 		detected_compositional_part1.json
 		detected_compositional_part2.json
 		detected_compositional_part3.json
-		cat three json to a single file
-		 use jsonmergy.py		
+		merge three json to a single file
+		 pip install jsonmerge
+		 python jsonmergy.py		
 
 To train the models from our paper run:
 	cd code
